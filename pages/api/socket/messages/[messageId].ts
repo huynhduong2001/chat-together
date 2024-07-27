@@ -15,14 +15,14 @@ export default async function handler(
 
     try {
         const profile = await currentProfilePage(req)
-        const {messageId, serverId, channelId} = req.query
+        const {messageId, groupId, channelId} = req.query
         const {content} = req.body
 
         if (!profile){
             return res.status(401).json({error: "Unauthorized"})
         }
-        if (!serverId){
-            return res.status(400).json({error: "Server ID Missing"})
+        if (!groupId){
+            return res.status(400).json({error: "Group ID Missing"})
         }
         if (!messageId){
             return res.status(400).json({error: "Message ID Missing"})
@@ -31,9 +31,9 @@ export default async function handler(
             return res.status(400).json({error: "Channel ID Missing"})
         }
 
-        const server = await db.server.findFirst({
+        const group = await db.group.findFirst({
             where: {
-                id: serverId as string,
+                id: groupId as string,
                 member: {
                     some: {
                         profileId: profile.id
@@ -44,21 +44,21 @@ export default async function handler(
                 member: true
             }
         })
-        if (!server){
-            return res.status(404).json({error: "Server Not Found"})
+        if (!group){
+            return res.status(404).json({error: "Group Not Found"})
         }
         
         const channel = await db.channel.findFirst({
             where:{
                 id: channelId as string,
-                serverId: serverId as string
+                groupId: groupId as string
             }
         })
         if (!channel){
             return res.status(404).json({error: "Channel Not Found"})
         }
 
-        const member = server.member.find((item)=> item.profileId === profile.id)
+        const member = group.member.find((item)=> item.profileId === profile.id)
         if (!member){
             return res.status(404).json({error: "Member not found"})
         }

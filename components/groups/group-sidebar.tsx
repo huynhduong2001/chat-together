@@ -2,18 +2,18 @@ import currentProfile from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { ChannelType, MemberRole } from "@prisma/client";
 import { redirect } from "next/navigation";
-import { ServerHeader } from "./server-header";
+import { GroupHeader } from "./group-header";
 import { ScrollArea } from "../ui/scroll-area";
-import ServerSearch from "./server-search";
+import GroupSearch from "./group-search";
 
 import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react"
 import { Separator } from "../ui/separator";
-import ServerSection from "./server-section";
-import ServerChannel from "./server-channel";
-import ServerMember from './server-member';
+import GroupSection from "./group-section";
+import GroupChannel from "./group-channel";
+import GroupMember from './group-member';
 
-interface ServerSidebarProps {
-    serverId: string
+interface GroupSidebarProps {
+    groupId: string
 }
 
 const iconMap = {
@@ -28,16 +28,16 @@ const roleIconMap = {
     [MemberRole.ADMIN]: <ShieldAlert className="h-4 w-4 mr-2 text-rose-500"/>
 }
 
-const ServerSidebar = async ({serverId}:ServerSidebarProps) => {
+const GroupSidebar = async ({groupId}:GroupSidebarProps) => {
 
     const profile = await currentProfile();
     if (!profile){
         return redirect("/")
     }
 
-    const server = await db.server.findUnique({
+    const group = await db.group.findUnique({
         where: {
-            id: serverId
+            id: groupId
         },
         include: {
             channel: {
@@ -55,23 +55,23 @@ const ServerSidebar = async ({serverId}:ServerSidebarProps) => {
             }
         }
     })
-    if (!server){
+    if (!group){
         return redirect("/")
     }
 
-    const textChannels = server?.channel.filter((channel) => channel.type === ChannelType.TEXT)
-    const audioChannels = server?.channel.filter((channel) => channel.type === ChannelType.AUDIO)
-    const videoChannels = server?.channel.filter((channel) => channel.type === ChannelType.VIDEO)
-    const members = server?.member.filter((member)=> member.profileId !== profile.id)
-    const role = server?.member.find((member) => member.profileId === profile.id)?.role
+    const textChannels = group?.channel.filter((channel) => channel.type === ChannelType.TEXT)
+    const audioChannels = group?.channel.filter((channel) => channel.type === ChannelType.AUDIO)
+    const videoChannels = group?.channel.filter((channel) => channel.type === ChannelType.VIDEO)
+    const members = group?.member.filter((member)=> member.profileId !== profile.id)
+    const role = group?.member.find((member) => member.profileId === profile.id)?.role
 
 
     return ( 
         <div className="flex flex-col h-full text-primary w-full dark:bg-[#2b2d31] bg-[#f2f3f5]">
-            <ServerHeader server={server}  role={role}/>
+            <GroupHeader group={group}  role={role}/>
             <ScrollArea className="flex-1 px-3">
                 <div className="mt-2">
-                    <ServerSearch
+                    <GroupSearch
                         data={[
                             {
                                 label: "Text Channels",
@@ -115,7 +115,7 @@ const ServerSidebar = async ({serverId}:ServerSidebarProps) => {
                 <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded-md my-2"/>
                 {!!textChannels?.length && (
                     <div className="mb-2">
-                        <ServerSection
+                        <GroupSection
                             sectionType="channel"
                             channelType={ChannelType.TEXT}
                             role={role}
@@ -123,10 +123,10 @@ const ServerSidebar = async ({serverId}:ServerSidebarProps) => {
                         />
                         <div className="space-y-[2px]">
                             {textChannels.map((channel)=>(
-                                <ServerChannel
+                                <GroupChannel
                                     key={channel.id}
                                     channel={channel}
-                                    server={server}
+                                    group={group}
                                     role={role}
                                 />
                             ))}
@@ -135,7 +135,7 @@ const ServerSidebar = async ({serverId}:ServerSidebarProps) => {
                 )}
                 {!!audioChannels?.length && (
                     <div className="mb-2">
-                        <ServerSection
+                        <GroupSection
                             sectionType="channel"
                             channelType={ChannelType.AUDIO}
                             role={role}
@@ -143,10 +143,10 @@ const ServerSidebar = async ({serverId}:ServerSidebarProps) => {
                         />
                         <div className="space-y-[2px]">
                             {audioChannels.map((channel)=>(
-                                <ServerChannel
+                                <GroupChannel
                                     key={channel.id}
                                     channel={channel}
-                                    server={server}
+                                    group={group}
                                     role={role}
                                 />
                             ))}
@@ -156,7 +156,7 @@ const ServerSidebar = async ({serverId}:ServerSidebarProps) => {
                 )}
                 {!!videoChannels?.length && (
                     <div className="mb-2">
-                        <ServerSection
+                        <GroupSection
                             sectionType="channel"
                             channelType={ChannelType.VIDEO}
                             role={role}
@@ -164,10 +164,10 @@ const ServerSidebar = async ({serverId}:ServerSidebarProps) => {
                         />
                         <div className="space-y-[2px]">
                             {videoChannels.map((channel)=>(
-                                <ServerChannel
+                                <GroupChannel
                                     key={channel.id}
                                     channel={channel}
-                                    server={server}
+                                    group={group}
                                     role={role}
                                 />
                             ))}
@@ -176,17 +176,17 @@ const ServerSidebar = async ({serverId}:ServerSidebarProps) => {
                 )}
                 {!!members?.length && (
                     <div className="mb-2">
-                        <ServerSection
+                        <GroupSection
                             sectionType="member"
                             role={role}
                             label="Members"
-                            server={server}
+                            group={group}
                         />
                         <div className="space-y-[2px]">
                             {members.map((member)=>(
-                                <ServerMember
+                                <GroupMember
                                     key={member.id}
-                                    server={server}
+                                    group={group}
                                     member={member}
                                 />
                             ))}
@@ -199,4 +199,4 @@ const ServerSidebar = async ({serverId}:ServerSidebarProps) => {
      );
 }
  
-export default ServerSidebar;
+export default GroupSidebar;

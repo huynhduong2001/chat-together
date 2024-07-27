@@ -4,7 +4,7 @@ import { NextResponse } from "next/server"
 
 export async function PATCH(
     req: Request,
-    {params}: {params:{serverId: string}}
+    {params}: {params:{groupId: string}}
 ){
     try {
         const profile = await currentProfile()
@@ -12,13 +12,13 @@ export async function PATCH(
         if (!profile){
             return new NextResponse("Unauthorized", {status: 401})
         }
-        if (!params.serverId){
-            return new NextResponse("Server Id Missing", {status: 400})
+        if (!params.groupId){
+            return new NextResponse("Group Id Missing", {status: 400})
         }
 
-        const server = await db.server.update({
+        const group = await db.group.update({
             where: {
-                id: params.serverId,
+                id: params.groupId,
                 profileId: {
                     not: profile.id
                 },
@@ -36,7 +36,7 @@ export async function PATCH(
                 }
             }
         })
-        return NextResponse.json(server)
+        return NextResponse.json(group)
 
     } catch (error) {
         console.log("SERVERID_LEAVE", error)

@@ -10,7 +10,7 @@ import { redirect } from "next/navigation";
 
 interface ChannelIdPageProps{
     params: {
-        serverId: string,
+        groupId: string,
         channelId: string
     }
 }
@@ -31,7 +31,7 @@ const ChannelIdPage = async({
     })
     const member = await db.member.findFirst({
         where: {
-            serverId: params.serverId,
+            groupId: params.groupId,
             profileId: profile.id
         }
     })
@@ -42,7 +42,7 @@ const ChannelIdPage = async({
 
     return ( 
         <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
-            <ChatHeader name={channel.name} serverId={channel.serverId} type="channel"/>
+            <ChatHeader nameUser={profile.name} name={channel.name} groupId={channel.groupId} type="channel"/>
             {channel.type === ChannelType.TEXT &&(
                 <>
                     <ChatMessage
@@ -54,7 +54,7 @@ const ChannelIdPage = async({
                         socketUrl="/api/socket/messages"
                         socketQuery={{
                             channelId: channel.id,
-                            serverId: channel.serverId
+                            groupId: channel.groupId
                         }}
                         paramKey="channelId"
                         paramValue={channel.id}
@@ -65,7 +65,7 @@ const ChannelIdPage = async({
                         type="channel"
                         query={{
                             channelId: params.channelId,
-                            serverId: params.serverId
+                            groupId: params.groupId
                         }}
                     />
                 </>
@@ -75,6 +75,7 @@ const ChannelIdPage = async({
                     chatId={channel.id}
                     video={false}
                     audio={true}
+                    name= {profile.name}
                 />
             )}
             {channel.type === ChannelType.VIDEO && (
@@ -82,6 +83,7 @@ const ChannelIdPage = async({
                     chatId={channel.id}
                     video={true}
                     audio={true}
+                    name={profile.name}
                 />
             )}
         </div>

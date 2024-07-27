@@ -9,18 +9,18 @@ import { useRouter } from "next/navigation";
 
 
 
-const DeleteServer = () => {
+const DeleteGroup = () => {
 
     const {isOpen, onClose, type, data} = useModal();
     const router = useRouter();
-    const {server} = data
+    const {group} = data
     const [isLoading, setIsLoading] = useState(false);
-    const isModalOpen = isOpen && type === "deleteServer";
+    const isModalOpen = isOpen && type === "deleteGroup";
 
     const onClick = async()=>{
         try {
             setIsLoading(true)
-            await axios.delete(`/api/servers/${server?.id}`)
+            await axios.delete(`/api/groups/${group?.id}`)
 
             onClose()
             router.refresh()
@@ -38,11 +38,11 @@ const DeleteServer = () => {
             <DialogContent className="bg-white text-black p-0">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Delete Server
+                        Delete Group
                     </DialogTitle>
                     <DialogDescription className="text-center text-zinc-500">
                         Are you sure you want to do this? <br/>
-                        <span className="text-indigo-500 font-semibold">{server?.name}</span> will be permanently deleted.
+                        <span className="text-indigo-500 font-semibold">{group?.name}</span> will be permanently deleted.
                     </DialogDescription>
                     
                 </DialogHeader>
@@ -72,4 +72,4 @@ const DeleteServer = () => {
      );
 }
  
-export default DeleteServer;
+export default DeleteGroup;

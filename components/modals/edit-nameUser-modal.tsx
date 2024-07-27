@@ -1,57 +1,58 @@
 "use client"
 
 import * as z from "zod"
+import qs from "query-string"
 import {zodResolver} from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
 import axios from "axios"
 
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogFooter, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle } from "../ui/dialog";
 import { Form, FormControl, FormField, FormLabel, FormItem, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import FileUpload from "../file-upload";
-import { useRouter } from "next/navigation";
+import {  useRouter } from "next/navigation";
 import useModal  from "@/app/hooks/use-modal-store";
+import { ChannelType } from "@prisma/client";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { useEffect } from "react";
 
 const formSchema = z.object({
-    name: z.string().min(1,{
-        message: "Server name is required."
-    }),
-    imageUrl: z.string().min(1,{
-        message: "Server image is required."
-    }),
+    nameUser: z.string().min(1,{
+        message: "Name is required."
+    })
 
 })
 
-const EditServerModal = () => {
+const EditNameUserModal = () => {
 
     const {isOpen, onClose, type, data} = useModal();
+    const {nameUser} = data
     const router = useRouter();
 
-    const isModalOpen = isOpen && type === "editServer";
-    const {server} = data
+    const isModalOpen = isOpen && type === "editNameUser";
 
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues:{
-            name: "",
-            imageUrl: ""
+            nameUser: ""
         }
     });
 
     useEffect(()=>{
-        if(server){
-            form.setValue("name",server.name)
-            form.setValue("imageUrl", server.imageUrl)
+        if (nameUser){
+            form.setValue("nameUser",nameUser);
         }
-    },[server, form])
+    },[form, nameUser])
 
     const isLoading = form.formState.isSubmitting;
 
     const onSubmit = async (values: z.infer<typeof formSchema>)=>{
         try {
-            await axios.patch(`/api/servers/${server?.id}`, values);
+            const url = qs.stringifyUrl({
+                url: `/api/profiles`
+                
+            })
+            await axios.patch(url, values);
 
             form.reset();
             router.refresh();
@@ -71,47 +72,25 @@ const EditServerModal = () => {
             <DialogContent className="bg-white text-black p-0">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Customize your server
+                        Edit Username
                     </DialogTitle>
-                    <DialogDescription className="text-center text-zinc-500">
-                        Give your server a personally with a name and an image. You can always change it later
-                    </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <div className="space-y-8 px-6">
-                            <div className="flex items-center justify-center text-center">
-                                <FormField
-                                    control={form.control}
-                                    name="imageUrl"
-                                    render={({field})=>(
-                                        <FormItem>
-                                            <FormControl>
-                                                <FileUpload 
-                                                    endpoint="serverImage"
-                                                    value={field.value}
-                                                    onChange={field.onChange}
-                                                />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-
-                            </div>
-
                             <FormField
                                 control={form.control}
-                                name="name"
+                                name="nameUser"
                                 render={({field})=>(
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
-                                            Server Name
+                                            Username
                                         </FormLabel>
                                         <FormControl>
                                             <Input
                                                 disabled = {isLoading}
                                                 className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
-                                                placeholder="Enter server name"
+                                                placeholder="Enter name user"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -133,4 +112,4 @@ const EditServerModal = () => {
      );
 }
  
-export default EditServerModal;
+export default EditNameUserModal;

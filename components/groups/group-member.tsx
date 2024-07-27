@@ -1,14 +1,14 @@
 "use client"
 
 import { cn } from "@/lib/utils";
-import { Member, MemberRole, Profile, Server } from "@prisma/client";
+import { Member, MemberRole, Profile, Group } from "@prisma/client";
 import { ShieldAlert, ShieldCheck } from "lucide-react";
 import { useParams,useRouter } from "next/navigation";
 import UserAvatar from "../user-avatar";
 
-interface ServerMemberProps {
+interface GroupMemberProps {
     member: Member & { profile: Profile};
-    server: Server
+    group: Group
 }
 
 const roleIconMap = {
@@ -17,17 +17,17 @@ const roleIconMap = {
     [MemberRole.ADMIN]: <ShieldAlert className="h-4 w-4 ml-2 text-rose-500"/>
 }
 
-const ServerMember = ({
+const GroupMember = ({
     member,
-    server
-}:ServerMemberProps) => {
+    group
+}:GroupMemberProps) => {
 
     const router = useRouter()
     const params = useParams()
 
     const icon = roleIconMap[member.role]
     const onClick = ()=>{
-        router.push(`/servers/${params?.serverId}/conversations/${member.id}`)
+        router.push(`/groups/${params?.groupId}/conversations/${member.id}`)
     }
 
     return ( 
@@ -48,4 +48,4 @@ const ServerMember = ({
      );
 }
  
-export default ServerMember;
+export default GroupMember;

@@ -13,7 +13,7 @@ const DeleteChannelModal = () => {
 
     const {isOpen, onClose, type, data} = useModal();
     const router = useRouter();
-    const {server, channel} = data
+    const {group, channel} = data
     const [isLoading, setIsLoading] = useState(false);
     const isModalOpen = isOpen && type === "deleteChannel";
 
@@ -23,14 +23,14 @@ const DeleteChannelModal = () => {
             const url = qs.stringifyUrl({
                 url: `/api/channels/${channel?.id}`,
                 query: {
-                    serverId: server?.id
+                    groupId: group?.id
                 }
             })
             await axios.delete(url)
 
             onClose()
             router.refresh()
-            router.push(`/servers/${server?.id}`)
+            router.push(`/groups/${group?.id}`)
 
         } catch (error) {
             console.log(error)

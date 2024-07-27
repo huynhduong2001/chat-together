@@ -1,9 +1,9 @@
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import ServerSidebar from "@/components/servers/server-sidebar";
+import GroupSidebar from "@/components/groups/group-sidebar";
 
-const MobileToggle = ({serverId}:{serverId: string}) => {
+const MobileToggle = ({groupId}:{groupId: string}) => {
     return (
         <Sheet>
             <SheetTrigger asChild>
@@ -12,8 +12,8 @@ const MobileToggle = ({serverId}:{serverId: string}) => {
                 </Button>
             </SheetTrigger>
             <SheetContent side={"left"} className="p-0 flex gap-0">
-                <div className="w-[72px]">
-                    <ServerSidebar serverId={serverId}/>
+                <div className="">
+                    <GroupSidebar groupId={groupId}/>
                 </div>
             </SheetContent>
         </Sheet>

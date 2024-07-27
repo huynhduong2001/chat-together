@@ -3,24 +3,24 @@ import { db } from "@/lib/db";
 import {  auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-interface ServerIdPage {
+interface GroupIdPage {
     params: {
-        serverId: string
+        groupId: string
     }
 }
 
-const ServerIdPage = async ({
+const GroupIdPage = async ({
     params
-}:ServerIdPage) => {
+}:GroupIdPage) => {
 
     const profile = await currentProfile()
     if (!profile){
         return auth().redirectToSignIn();
     }
 
-    const server = await db.server.findUnique({
+    const group = await db.group.findUnique({
         where: {
-            id: params.serverId,
+            id: params.groupId,
             member: {
                 some: {
                     profileId: profile.id
@@ -39,12 +39,12 @@ const ServerIdPage = async ({
             
         }
     })
-    const initialChannel = server?.channel[0];
+    const initialChannel = group?.channel[0];
     if(initialChannel?.name !== "general"){
         return null
     }
 
-    return redirect(`/servers/${params.serverId}/channels/${initialChannel?.id}`)
+    return redirect(`/groups/${params.groupId}/channels/${initialChannel?.id}`)
 }
  
-export default ServerIdPage;
+export default GroupIdPage;

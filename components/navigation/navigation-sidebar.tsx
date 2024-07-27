@@ -17,7 +17,7 @@ const NavigationSideBar = async() => {
         redirect('/')
     }
 
-    const servers = await db.server.findMany({
+    const groups = await db.group.findMany({
         where: {
             member: {
                 some: {
@@ -31,9 +31,9 @@ const NavigationSideBar = async() => {
             <NavigationAction/>
             <Separator className="h-[2px] bg-zinc-300 dark:bg-zinc-700 rounded-md w-10 mx-auto"/>
             <ScrollArea className="flex-1 w-full">
-                {servers.map((server)=>(
-                    <div key={server.id} className="mb-4">
-                        <NavigationItem id={server.id} imageUrl={server.imageUrl} name={server.name}/>
+                {groups.map((group)=>(
+                    <div key={group.id} className="mb-4">
+                        <NavigationItem id={group.id} imageUrl={group.imageUrl} name={group.name}/>
                     </div>
                 ))}
             </ScrollArea>

@@ -24,7 +24,11 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={cn(font.className, "bg-white dark:bg-[#313338]") }>
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} storageKey="teamchat-theme">
+          <ThemeProvider attribute="class"
+            //  defaultTheme="dark" 
+             enableSystem={false} 
+             storageKey="teamchat-theme"
+          >
             <SocketProvider>
               <ModalProvider/>
               <QueryProvider>

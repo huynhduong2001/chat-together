@@ -16,12 +16,12 @@ const InviteModal = () => {
 
     const {onOpen,isOpen, onClose, type, data} = useModal();
     const origin = useOrigin();
-    const {server} = data
+    const {group} = data
 
     const [copied, setCopied] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const isModalOpen = isOpen && type === "invite";
-    const inviteUrl = `${origin}/invite/${server?.inviteCode}`;
+    const inviteUrl = `${origin}/invite/${group?.inviteCode}`;
 
     const onCopy = () => {
         navigator.clipboard.writeText(inviteUrl);
@@ -35,9 +35,9 @@ const InviteModal = () => {
     const onNew = async ()=> {
         try {
             setIsLoading(true)
-            const res = await axios.patch(`/api/servers/${server?.id}/invite-code`)
+            const res = await axios.patch(`/api/groups/${group?.id}/invite-code`)
 
-            onOpen("invite",{server: res.data})
+            onOpen("invite",{group: res.data})
         } catch (error) {
             console.log(error)
         }
@@ -58,7 +58,7 @@ const InviteModal = () => {
                 </DialogHeader>
                 <div className="p-6">
                     <Label className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
-                        Server invite link
+                        Group invite link
                     </Label>
                     <div className="flex items-center mt-2 gap-x-2">
                         <Input disabled={isLoading} value={inviteUrl} className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"/>

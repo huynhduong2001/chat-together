@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import useModal from "@/app/hooks/use-modal-store"
 import EmojiPicker from "@/components/emoji-picker"
-import { Plus, Smile } from "lucide-react"
+import { Plus } from "lucide-react"
 import { useRouter } from "next/navigation";
 
 interface ChatInputProps {

@@ -11,21 +11,21 @@ export async function PATCH(
         const {searchParams} = new URL(req.url)
         const {role} = await req.json();
 
-        const serverId = searchParams.get("serverId")
+        const groupId = searchParams.get("groupId")
 
         if (!profile){
             return new NextResponse("Unauthorized", {status: 401})
         }
-        if(!serverId){
-            return new NextResponse("Server ID Missing", {status: 400})
+        if(!groupId){
+            return new NextResponse("Group ID Missing", {status: 400})
         }
         if(!params.memberId){
             return new NextResponse("Memver ID Missing", {status: 400})
         }
 
-        const server = await db.server.update({
+        const group = await db.group.update({
             where: {
-                id: serverId,
+                id: groupId,
                 profileId: profile.id
             },
             data:{
@@ -54,7 +54,7 @@ export async function PATCH(
                 }
             }
         })
-        return NextResponse.json(server)
+        return NextResponse.json(group)
 
     } catch (error) {
         console.log("MEMBER_ID_PATCH", error)
@@ -71,21 +71,21 @@ export async function DELETE(
         const {searchParams} = new URL(req.url)
         // const {role} = await req.json();
 
-        const serverId = searchParams.get("serverId")
+        const groupId = searchParams.get("groupId")
 
         if (!profile){
             return new NextResponse("Unauthorized", {status: 401})
         }
-        if(!serverId){
-            return new NextResponse("Server ID Missing", {status: 400})
+        if(!groupId){
+            return new NextResponse("Group ID Missing", {status: 400})
         }
         if(!params.memberId){
             return new NextResponse("Memver ID Missing", {status: 400})
         }
 
-        const server = await db.server.update({
+        const group = await db.group.update({
             where: {
-                id: serverId,
+                id: groupId,
                 profileId: profile.id
             },
             data:{
@@ -109,7 +109,7 @@ export async function DELETE(
                 }
             }
         })
-        return NextResponse.json(server)
+        return NextResponse.json(group)
 
     } catch (error) {
         console.log("MEMBER_ID_DELETE", error)

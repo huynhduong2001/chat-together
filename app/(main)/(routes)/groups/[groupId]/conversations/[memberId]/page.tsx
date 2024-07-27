@@ -11,7 +11,7 @@ import { redirect } from "next/navigation";
 interface MemberIdPageProps {
     params: {
         memberId: string,
-        serverId: string
+        groupId: string
     },
     searchParams: {
         video?: boolean
@@ -30,7 +30,7 @@ const MemberIdPage = async({
 
     const currentMember = await db.member.findFirst({
         where: {
-            serverId: params.serverId,
+            groupId: params.groupId,
             profileId: profile.id
         },
         include: {
@@ -43,7 +43,7 @@ const MemberIdPage = async({
 
     const conversation = await getOrCreateConversation(currentMember.id, params.memberId)
     if (!conversation){
-        return redirect(`/servers/${params.serverId}`)
+        return redirect(`/groups/${params.groupId}`)
     }
 
     const {memberOne, memberTwo} = conversation;
@@ -53,14 +53,16 @@ const MemberIdPage = async({
         <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
             <ChatHeader 
                 name={otherMember.profile.name} 
-                serverId={params.serverId} 
+                groupId={params.groupId} 
                 type="conversation" 
                 imageUrl={otherMember.profile.imageUrl}
+                nameUser={profile.name}
             />
             {searchParams.video &&(
                 <MediaRoom
                     chatId={conversation.id}
                     video={true}
+                    name= {profile.name}
                     audio={true}
                 />
             )}

@@ -14,7 +14,7 @@ export async function POST(req:Request) {
             return new NextResponse("Unauthorized", {status: 401})
         }
 
-        const server = await db.server.create({
+        const group = await db.group.create({
             data: {
                 profileId: profile.id,
                 name,
@@ -32,9 +32,9 @@ export async function POST(req:Request) {
                 }
             }
         })
-        return NextResponse.json(server);
+        return NextResponse.json(group);
     } catch (error) {
-        console.log("SERVER_POST", error)
+        console.log("GROUP_POST", error)
         return new NextResponse("Internal Error", {status: 500})
     }
 }

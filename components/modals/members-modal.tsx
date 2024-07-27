@@ -9,7 +9,7 @@ import { MemberRole } from "@prisma/client";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../ui/dialog";
 import { Check, Gavel, Loader2, MoreVertical, Shield, ShieldAlert, ShieldCheck, ShieldQuestion } from "lucide-react";
-import { ServerWithMembersWithProfiles } from "@/types";
+import { GroupWithMembersWithProfiles } from "@/types";
 import { ScrollArea } from "../ui/scroll-area";
 import UserAvatar from "../user-avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "../ui/dropdown-menu";
@@ -26,7 +26,7 @@ const MembersModal = () => {
     const {onOpen,isOpen, onClose, type, data} = useModal();
     const router = useRouter();
     const [loadingId, setLoadingId] = useState("")
-    const {server} = data as {server: ServerWithMembersWithProfiles}
+    const {group} = data as {group: GroupWithMembersWithProfiles}
     const isModalOpen = isOpen && type === "members";
     const onRoleChange =async (memberId : string, role: MemberRole)=> {
         try {
@@ -34,14 +34,14 @@ const MembersModal = () => {
             const url = qs.stringifyUrl({
                 url: `/api/members/${memberId}`,
                 query: {
-                    serverId: server?.id,
+                    groupId: group?.id,
                     memberId
                 }
             })
 
             const res = await axios.patch(url, {role})
             router.refresh();
-            onOpen("members",{server: res.data})
+            onOpen("members",{group: res.data})
         } catch (error) {
             console.log(error)
         } finally {
@@ -55,13 +55,13 @@ const MembersModal = () => {
             const url = qs.stringifyUrl({
                 url: `/api/members/${memberId}`,
                 query: {
-                    serverId: server?.id
+                    groupId: group?.id
                 }
             })
 
             const res = await axios.delete(url)
             router.refresh();
-            onOpen("members",{server: res.data})
+            onOpen("members",{group: res.data})
 
         } catch (error) {
             console.log(error)
@@ -75,14 +75,14 @@ const MembersModal = () => {
             <DialogContent className="bg-white text-black">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Managa Members
+                        Manage Members
                     </DialogTitle>
                     <DialogDescription className="text-center text-zinc-500">
-                        {server?.member?.length} Members
+                        {group?.member?.length} Members
                     </DialogDescription>
                 </DialogHeader>
                 <ScrollArea className="mt-8 max-h-[420px] pr-6">
-                    {server?.member?.map((item)=>(
+                    {group?.member?.map((item)=>(
                         <div key={item.id} className="flex items-center gap-x-2 mb-6">
                             <UserAvatar src={item.profile.imageUrl}/>
                             <div className="flex flex-col gap-y-1">
@@ -94,14 +94,14 @@ const MembersModal = () => {
                                     {item.profile.email}
                                 </p>
                             </div>
-                            {server.profileId !== item.profileId && loadingId !== item.id && (
+                            {group.profileId !== item.profileId && loadingId !== item.id && (
                                 <div className="ml-auto">
                                     <DropdownMenu>
                                         <DropdownMenuTrigger>
                                             <MoreVertical className="h-4 w-4 text-zinc-500"/>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent side="left">
-                                            <DropdownMenuSub>
+                                            {/* <DropdownMenuSub>
                                                 <DropdownMenuSubTrigger className="flex items-center">
                                                     <ShieldQuestion className="w-4 h-4 mr-2"/>
                                                     <span>Role</span>
@@ -125,7 +125,7 @@ const MembersModal = () => {
                                                     </DropdownMenuSubContent>
                                                 </DropdownMenuPortal>
                                             </DropdownMenuSub>
-                                            <Separator/>
+                                            <Separator/> */}
                                             <DropdownMenuItem onClick={()=> onKick(item.id)}>
                                                 <Gavel className="w-4 h-4 mr-2"/>
                                                 Kick

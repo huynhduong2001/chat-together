@@ -13,13 +13,13 @@ export default async function handler(
     try {
         const profile = await currentProfilePage(req)
         const {content, fileUrl} = req.body
-        const {serverId, channelId} = req.query
+        const {groupId, channelId} = req.query
 
         if (!profile){
             return res.status(401).json({error: "Unauthorized"})
         }
-        if (!serverId){
-            return res.status(400).json({error: "Server ID Missing"})
+        if (!groupId){
+            return res.status(400).json({error: "Group ID Missing"})
         }
         if (!channelId){
             return res.status(400).json({error: "Channel ID Missing"})
@@ -28,9 +28,9 @@ export default async function handler(
             return res.status(400).json({error: "Content Missing"})
         }
 
-        const server = await db.server.findFirst({
+        const group = await db.group.findFirst({
             where: {
-                id: serverId as string,
+                id: groupId as string,
                 member: {
                     some: {
                         profileId: profile.id
@@ -42,21 +42,21 @@ export default async function handler(
                 member: true
             }
         })
-        if (!server){
-            return res.status(404).json({message: "Server not found"})
+        if (!group){
+            return res.status(404).json({message: "Group not found"})
         }
 
         const channel = await db.channel.findFirst({
             where: {
                 id: channelId as string,
-                serverId: serverId as string
+                groupId: groupId as string
             }
         })
         if (!channel){
             return res.status(404).json({message: "Channel not found"})
         }
 
-        const member = server.member.find((member)=> member.profileId === profile.id)
+        const member = group.member.find((member)=> member.profileId === profile.id)
         if (!member){
             return res.status(404).json({error: "Member not found"})
         }

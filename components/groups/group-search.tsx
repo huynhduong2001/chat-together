@@ -7,7 +7,7 @@ import { useParams, useRouter } from "next/navigation"
 
 
 
-interface ServerSearchProps {
+interface GroupSearchProps {
     data: {
         label: string,
         type: "channel" | "member",
@@ -21,9 +21,9 @@ interface ServerSearchProps {
 
 
 
-const ServerSearch = ({
+const GroupSearch = ({
     data
-}: ServerSearchProps) => {
+}: GroupSearchProps) => {
 
     const [open, setOpen] = useState(false)
     const router = useRouter()
@@ -45,10 +45,10 @@ const ServerSearch = ({
     const onClick = ({id, type}:{id: string, type: "channel" | "member"})=> {
         setOpen(false)
         if (type == "member"){
-            return router.push(`/servers/${params?.serverId}/conversations/${id}`)
+            return router.push(`/groups/${params?.groupId}/conversations/${id}`)
         }
         if (type == "channel"){
-            return router.push(`/servers/${params?.serverId}/channels/${id}`)
+            return router.push(`/groups/${params?.groupId}/channels/${id}`)
         }
     }
 
@@ -90,4 +90,4 @@ const ServerSearch = ({
      );
 }
  
-export default ServerSearch;
+export default GroupSearch;

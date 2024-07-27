@@ -1,16 +1,16 @@
 "use client"
 
 import { cn } from "@/lib/utils";
-import { Channel, ChannelType, MemberRole, Server } from "@prisma/client";
+import { Channel, ChannelType, MemberRole, Group } from "@prisma/client";
 import { Edit, Hash, Lock, Mic, Trash, Video } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { ActionTooltip } from "../action-tooltip";
 import useModal, { ModalType } from "@/app/hooks/use-modal-store";
 import React from "react";
 
-interface ServerChannelProps {
+interface GroupChannelProps {
     channel: Channel,
-    server: Server;
+    group: Group;
     role?: MemberRole
 }
 
@@ -20,23 +20,23 @@ const iconMap = {
     [ChannelType.VIDEO]: Video
 }
 
-const ServerChannel = ({
+const GroupChannel = ({
     channel,
-    server,
+    group,
     role
-}:ServerChannelProps) => {
+}:GroupChannelProps) => {
     const {onOpen} = useModal()
     const router = useRouter()
     const params = useParams()
 
     const Icon = iconMap[channel.type]
     const onClick = ()=> {
-        router.push(`/servers/${params?.serverId}/channels/${channel.id}`)
+        router.push(`/groups/${params?.groupId}/channels/${channel.id}`)
     }
 
     const onAction = (e: React.MouseEvent, action: ModalType)=>{
         e.stopPropagation()
-        onOpen(action, {channel, server})
+        onOpen(action, {channel, group})
     }
 
     return ( 
@@ -69,4 +69,4 @@ const ServerChannel = ({
      );
 }
  
-export default ServerChannel;
+export default GroupChannel;

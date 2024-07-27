@@ -15,20 +15,20 @@ import useModal  from "@/app/hooks/use-modal-store";
 
 const formSchema = z.object({
     name: z.string().min(1,{
-        message: "Server name is required."
+        message: "Group name is required."
     }),
     imageUrl: z.string().min(1,{
-        message: "Server image is required."
+        message: "Group image is required."
     }),
 
 })
 
-const CreateServerModal = () => {
+const CreateGroupModal = () => {
 
     const {isOpen, onClose, type} = useModal();
     const router = useRouter();
 
-    const isModalOpen = isOpen && type === "createServer";
+    const isModalOpen = isOpen && type === "createGroup";
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -42,7 +42,7 @@ const CreateServerModal = () => {
 
     const onSubmit = async (values: z.infer<typeof formSchema>)=>{
         try {
-            await axios.post("/api/servers", values);
+            await axios.post("/api/groups", values);
 
             form.reset();
             router.refresh();
@@ -62,10 +62,10 @@ const CreateServerModal = () => {
             <DialogContent className="bg-white text-black p-0">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Customize your server
+                        Customize your group
                     </DialogTitle>
                     <DialogDescription className="text-center text-zinc-500">
-                        Give your server a personally with a name and an image. You can always change it later
+                        Give your group a personally with a name and an image. You can always change it later
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -79,7 +79,7 @@ const CreateServerModal = () => {
                                         <FormItem>
                                             <FormControl>
                                                 <FileUpload 
-                                                    endpoint="serverImage"
+                                                    endpoint="groupImage"
                                                     value={field.value}
                                                     onChange={field.onChange}
                                                 />
@@ -96,13 +96,13 @@ const CreateServerModal = () => {
                                 render={({field})=>(
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
-                                            Server Name
+                                            Group Name
                                         </FormLabel>
                                         <FormControl>
                                             <Input
                                                 disabled = {isLoading}
                                                 className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
-                                                placeholder="Enter server name"
+                                                placeholder="Enter group name"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -124,4 +124,4 @@ const CreateServerModal = () => {
      );
 }
  
-export default CreateServerModal;
+export default CreateGroupModal;

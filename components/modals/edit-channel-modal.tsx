@@ -31,7 +31,7 @@ const formSchema = z.object({
 const EditChannelModal = () => {
 
     const {isOpen, onClose, type, data} = useModal();
-    const {channel, server} = data
+    const {channel, group} = data
     const router = useRouter();
 
     const isModalOpen = isOpen && type === "editChannel";
@@ -58,7 +58,7 @@ const EditChannelModal = () => {
             const url = qs.stringifyUrl({
                 url: `/api/channels/${channel?.id}`,
                 query: {
-                    serverId: server?.id
+                    groupId: group?.id
                 }
             })
             await axios.patch(url, values);

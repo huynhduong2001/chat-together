@@ -1,27 +1,27 @@
 "use client"
 
-import { ServerWithMembersWithProfiles } from "@/types";
+import { GroupWithMembersWithProfiles } from "@/types";
 import { ChannelType, MemberRole } from "@prisma/client";
 import { ActionTooltip } from "../action-tooltip";
 import { Plus, Settings } from "lucide-react";
 import useModal from "@/app/hooks/use-modal-store";
 
-interface ServerSectionProps {
+interface GroupSectionProps {
     label: string,
     role?: MemberRole,
     sectionType: "channel"|"member",
     channelType?: ChannelType,
-    server?: ServerWithMembersWithProfiles
+    group?: GroupWithMembersWithProfiles
 
 }
 
-const ServerSection = ({
+const GroupSection = ({
     label,
     role,
     sectionType,
     channelType,
-    server
-}:ServerSectionProps) => {
+    group
+}:GroupSectionProps) => {
 
     const {onOpen} = useModal();
 
@@ -39,7 +39,7 @@ const ServerSection = ({
             )}
             {role === MemberRole.ADMIN && sectionType === "member" &&(
                 <ActionTooltip label="Manage Members" side="top">
-                    <button onClick={()=>onOpen("members",{server})} className="transition text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300">
+                    <button onClick={()=>onOpen("members",{group})} className="transition text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300">
                         <Settings className="h-4 w-4"/>
                     </button>
                 </ActionTooltip>
@@ -48,4 +48,4 @@ const ServerSection = ({
      );
 }
  
-export default ServerSection;
+export default GroupSection;

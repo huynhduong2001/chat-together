@@ -3,7 +3,6 @@
 import * as z from "zod"
 import {zodResolver} from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
 import axios from "axios"
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogFooter, DialogTitle } from "../ui/dialog";
@@ -12,6 +11,8 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import FileUpload from "../file-upload";
 import { useRouter } from "next/navigation";
+import useModal  from "@/app/hooks/use-modal-store";
+import { useEffect } from "react";
 
 const formSchema = z.object({
     name: z.string().min(1,{
@@ -23,15 +24,13 @@ const formSchema = z.object({
 
 })
 
-const InitialModal = () => {
+const EditGroupModal = () => {
 
-    const [isMounted, setIsMounted] = useState(false)
+    const {isOpen, onClose, type, data} = useModal();
     const router = useRouter();
 
-
-    useEffect(()=>{
-        setIsMounted(true)
-    },[])
+    const isModalOpen = isOpen && type === "editGroup";
+    const {group} = data
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -41,26 +40,34 @@ const InitialModal = () => {
         }
     });
 
+    useEffect(()=>{
+        if(group){
+            form.setValue("name",group.name)
+            form.setValue("imageUrl", group.imageUrl)
+        }
+    },[group, form])
+
     const isLoading = form.formState.isSubmitting;
 
     const onSubmit = async (values: z.infer<typeof formSchema>)=>{
         try {
-            await axios.post("/api/groups", values);
+            await axios.patch(`/api/groups/${group?.id}`, values);
 
-            form.reset();
+            // form.reset();
             router.refresh();
-            window.location.reload();
+            onClose();
         } catch (error) {
             console.log(error)
         }
     }
 
-    if (!isMounted){
-        return null;
+    const handleClose = () => {
+        form.reset();
+        onClose();
     }
 
     return ( 
-        <Dialog open>
+        <Dialog open={isModalOpen} onOpenChange={handleClose}>
             <DialogContent className="bg-white text-black p-0">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
@@ -116,7 +123,7 @@ const InitialModal = () => {
 
                         <DialogFooter className="bg-gray-100 px-6 py-4">
                             <Button variant="primary" disabled={isLoading}>
-                                Create
+                                Save
                             </Button>
                         </DialogFooter>
                     </form>
@@ -126,4 +133,4 @@ const InitialModal = () => {
      );
 }
  
-export default InitialModal;
+export default EditGroupModal;

@@ -10,21 +10,21 @@ export async function DELETE(
     try {
         const profile = await currentProfile()
         const {searchParams} = new URL(req.url)
-        const serverId = searchParams.get("serverId")
+        const groupId = searchParams.get("groupId")
 
         if (!profile){
             return new NextResponse("Unauthorized", {status: 401})
         }
-        if (!serverId){
-            return new NextResponse("Server Id Missing",{status: 400})
+        if (!groupId){
+            return new NextResponse("Group Id Missing",{status: 400})
         }
         if (!params.channelId){
             return new NextResponse("Channel Id Missing",{status: 400})
         }
 
-        const server = await db.server.update({
+        const group = await db.group.update({
             where: {
-                id: serverId,
+                id: groupId,
                 member: {
                     some: {
                         profileId: profile.id,
@@ -45,7 +45,7 @@ export async function DELETE(
                 }
             }
         })
-        return NextResponse.json(server)
+        return NextResponse.json(group)
 
 
     } catch (error) {
@@ -62,13 +62,13 @@ export async function PATCH(
         const profile = await currentProfile()
         const {name, type} = await req.json();
         const {searchParams} = new URL(req.url)
-        const serverId = searchParams.get("serverId")
+        const groupId = searchParams.get("groupId")
 
         if (!profile){
             return new NextResponse("Unauthorized", {status: 401})
         }
-        if (!serverId){
-            return new NextResponse("Server Id Missing",{status: 400})
+        if (!groupId){
+            return new NextResponse("Group Id Missing",{status: 400})
         }
         if (!params.channelId){
             return new NextResponse("Channel Id Missing",{status: 400})
@@ -77,9 +77,9 @@ export async function PATCH(
             return new NextResponse("Name cannot be 'general'",{status: 400})
         }
 
-        const server = await db.server.update({
+        const group = await db.group.update({
             where: {
-                id: serverId,
+                id: groupId,
                 member: {
                     some: {
                         profileId: profile.id,
@@ -107,7 +107,7 @@ export async function PATCH(
                 }
             }
         })
-        return NextResponse.json(server)
+        return NextResponse.json(group)
 
 
     } catch (error) {

@@ -9,18 +9,18 @@ import { useRouter } from "next/navigation";
 
 
 
-const LeaveServerModal = () => {
+const LeaveGroupModal = () => {
 
     const {isOpen, onClose, type, data} = useModal();
     const router = useRouter();
-    const {server} = data
+    const {group} = data
     const [isLoading, setIsLoading] = useState(false);
-    const isModalOpen = isOpen && type === "leaveServer";
+    const isModalOpen = isOpen && type === "leaveGroup";
 
     const onClick = async()=>{
         try {
             setIsLoading(true)
-            await axios.patch(`/api/servers/${server?.id}/leave`)
+            await axios.patch(`/api/groups/${group?.id}/leave`)
 
             onClose()
             router.refresh()
@@ -38,11 +38,11 @@ const LeaveServerModal = () => {
             <DialogContent className="bg-white text-black p-0">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Leave Server
+                        Leave Group
                     </DialogTitle>
                     <DialogDescription className="text-center text-zinc-500">
                         Are you sure you want to leave 
-                        <span className="font-semibold text-indigo-500">{server?.name}</span>
+                        <span className="font-semibold text-indigo-500">{group?.name}</span>
                         ?
                     </DialogDescription>
                     
@@ -73,4 +73,4 @@ const LeaveServerModal = () => {
      );
 }
  
-export default LeaveServerModal;
+export default LeaveGroupModal;
